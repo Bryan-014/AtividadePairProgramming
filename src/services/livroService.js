@@ -19,16 +19,17 @@ const atualizarLivro = async (id, titulo, autor)=>{
   livro.autor = autor;
 
   return await livro.save();
-}
+};
+
 const deletarLivro = async (id) => {
   return await Livro.destroy({
     where: { id }
   });
-}
+};
+
 const livrosDisponiveis = async ()=>{
-  console.log('caiu aqui ou naoc aralho]')
   return await Livro.findAll();
-}
+};
 
 module.exports = { 
   criarLivro, 

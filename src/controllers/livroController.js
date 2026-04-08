@@ -35,8 +35,6 @@ const deletarPorId = async(req, res)=>{
 }
 
 const listarLivros = async (req, res) => {
-    console.log("1123")
-
   try {
     const livros = await livrosDisponiveis();
     return res.status(200).json(livros);
