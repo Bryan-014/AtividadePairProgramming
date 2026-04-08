@@ -31,7 +31,7 @@ describe("Empréstimos", () => {
             data_devolucao_prevista: "2025-05-01",
         });
     
-        const res = await axios.delete(`${api}/usuarios/${criado.data.id}`);
+        const res = await axios.delete(`${api}/emprestimos/${criado.data.id}`);
         expect(res.status).toBe(204);
     });
 
