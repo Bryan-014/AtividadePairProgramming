@@ -20,8 +20,12 @@ const deletarEmprestimo = async (id) => {
   });
 };
 
-const listarEmprestimos = async ()=>{
-  return await Emprestimo.findAll();
+const listarEmprestimos = async (usuario_id) => {
+  const where = {};
+
+  if (usuario_id) where.usuario_id = usuario_id;
+
+  return await Emprestimo.findAll({ where });
 };
 
 const devolverLivro = async (data_devolucao, emprestimo_id) => {

@@ -42,11 +42,14 @@ const deletarPorId = async(req, res)=>{
 
 const listar = async (req, res) => {
   try {
-    const emprestimos = await listarEmprestimos();
+    const { usuario_id } = req.query;
+
+    const emprestimos = await listarEmprestimos(usuario_id);
+
     return res.status(200).json(emprestimos);
   } catch (error) {
     return res.status(500).json({ error: "erro no servidor:" + error });
   }
-}
+};
 
 module.exports = { criar, acharPorId, realizarDevolucao, deletarPorId, listar };
