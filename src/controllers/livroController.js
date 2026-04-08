@@ -14,7 +14,6 @@ const acharPorId = async(req, res) =>{
     const{id} = req.params;
     const livro = await buscarPorId(id);
 
-
     if(!livro) return res.status(404).json({error:"não encontrado ai ai ai"})
         return res.status(200).json(livro)
 }
