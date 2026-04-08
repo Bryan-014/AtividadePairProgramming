@@ -2,7 +2,6 @@ const axios = require('axios');
 require('dotenv').config();
 const api = `http://localhost:${process.env.PORT || 3000}`;
 
-// Altere para ids que existem no seu banco
 const LIVRO_ID = 1;
 const USUARIO_ID = 1;
 
@@ -26,19 +25,39 @@ describe("Empréstimos", () => {
     });
 
     test("deve deletar um empréstimo", async () => {
-        // criar o teste
+        const criado = await axios.post(`${api}/emprestimos`, {
+            livro_id: LIVRO_ID,
+            usuario_id: USUARIO_ID,
+            data_devolucao_prevista: "2025-05-01",
+        });
+    
+        const res = await axios.delete(`${api}/usuarios/${criado.data.id}`);
+        expect(res.status).toBe(204);
     });
 
     test("deve retornar 404 ao deletar empréstimo inexistente", async () => {
-        // criar o teste
+        try {
+            await axios.delete(`${api}/emprestimos/99999`);
+        } catch (err) {
+            expect(err.response.status).toBe(404);
+        }
     });
 
     test("deve retornar um empréstimo pelo id", async () => {
-        // criar o teste
+        const res = await axios.get(`${api}/emprestimos/1`);
+        expect(res.status).toBe(200);
+        expect(res.data).toHaveProperty("id");
+        expect(res.data).toHaveProperty("livro_id");
+        expect(res.data).toHaveProperty("usuario_id");
+        expect(res.data).toHaveProperty("data_devolucao_prevista");
     });
     
     test("deve retornar 404 para empréstimo inexistente", async () => {
-        // criar o teste
+        try {
+            await axios.get(`${api}/emprestimos/99999`);
+        } catch (err) {
+            expect(err.response.status).toBe(404);
+        }
     });
 
     test("deve retornar 400 ao registrar empréstimo sem livro_id", async () => {
@@ -53,26 +72,75 @@ describe("Empréstimos", () => {
     });
 
     test("deve retornar 400 ao registrar empréstimo sem usuario_id", async () => {
-        // criar o teste
+        try {
+            await axios.post(`${api}/emprestimos`, {
+                livro_id: LIVRO_ID,
+                data_devolucao_prevista: "2025-05-01",
+            });
+        } catch (err) {
+            expect(err.response.status).toBe(400);
+        }
     });
 
     test("deve retornar 400 ao registrar empréstimo sem data de devolução", async () => {
-        // criar o teste
+        try {
+            await axios.post(`${api}/emprestimos`, {
+                livro_id: LIVRO_ID,
+                usuario_id: USUARIO_ID,
+            });
+        } catch (err) {
+            expect(err.response.status).toBe(400);
+        }
     });
 
     test("deve registrar a devolução de um empréstimo", async () => {
-        // criar o teste
+        const criado = await axios.post(`${api}/emprestimos`, {
+            livro_id: LIVRO_ID,
+            usuario_id: USUARIO_ID,
+            data_devolucao_prevista: "2025-05-01",
+        });
+
+        const res = await axios.patch(`${api}/emprestimos/${criado.data.id}/devolucao`);
+        
+        expect(res.status).toBe(200);
+        expect(res.data).toHaveProperty("data_devolucao"); 
     });
 
     test("deve retornar 404 ao devolver empréstimo inexistente", async () => {
-        // criar o teste
+        try {
+            await axios.patch(`${api}/emprestimos/99999/devolucao`);
+        } catch (err) {
+            expect(err.response.status).toBe(404);
+        }
     });
 
     test("deve listar empréstimos de um usuário específico", async () => {
-        // criar o teste
+        const res = await axios.get(`${api}/emprestimos?usuario_id=${USUARIO_ID}`);
+        
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.data)).toBe(true);
+        if (res.data.length > 0) {
+            expect(res.data[0].usuario_id).toBe(USUARIO_ID);
+        }
     });
 
     test("deve retornar 400 ao emprestar livro já emprestado", async () => {
-        // criar o teste
+        const primeiro = await axios.post(`${api}/emprestimos`, {
+            livro_id: LIVRO_ID,
+            usuario_id: USUARIO_ID,
+            data_devolucao_prevista: "2025-05-01",
+        });
+
+        try {
+            await axios.post(`${api}/emprestimos`, {
+                livro_id: LIVRO_ID,
+                usuario_id: USUARIO_ID,
+                data_devolucao_prevista: "2025-05-10",
+            });
+        } catch (err) {
+            expect(err.response.status).toBe(400);
+        } finally {
+            await axios.delete(`${api}/emprestimos/${primeiro.data.id}`);
+        }
     });
 });
