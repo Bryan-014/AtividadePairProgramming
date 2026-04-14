@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { Emprestimo } = require('../models');
 require('dotenv').config();
 const api = `http://localhost:${process.env.PORT || 3000}`;
 
@@ -26,7 +27,7 @@ describe("Empréstimos", () => {
 
     test("deve deletar um empréstimo", async () => {
         const criado = await axios.post(`${api}/emprestimos`, {
-            livro_id: LIVRO_ID,
+            livro_id: 999,
             usuario_id: USUARIO_ID,
             data_devolucao_prevista: "2025-05-01",
         });

@@ -26,13 +26,22 @@ const atualizarPorId = async(req, res)=>{
     if(!livro) return res.status(404).json({error:"não encontrado ai ai ai"})
         return res.status(200).json(livro)
 }
-const deletarPorId = async(req, res)=>{
-    const{id} = req.params;
-    const livro = await deletarLivro(id);
 
-    if(!livro) return res.status(500).json({error:"não deletado ai ai ai"})
-        return res.status(202).json()
-}
+const deletarPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletado = await deletarLivro(id);
+
+    if (!deletado) {
+      return res.status(404).json({ error: "Livro não encontrado" });
+    }
+
+    return res.status(202).send(); 
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 const listarLivros = async (req, res) => {
   try {

@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { Livro } = require('../models');
 const api = `http://localhost:${process.env.PORT || 3000}`;
 
 describe("Livros", () => {
@@ -20,7 +21,8 @@ describe("Livros", () => {
         expect(res.body.autor).toBe('Martin Code');
     });
     test('DELETE /livros:id deleta um livro', async () => {
-        const res = await request(api).delete(`/livros/3`);
+        await Livro.create({ id: 999, titulo: "Teste", autor: "Autor" });
+        const res = await request(api).delete(`/livros/999`);
         expect(res.status).toBe(202);
         
     });
