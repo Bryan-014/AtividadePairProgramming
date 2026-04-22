@@ -1,7 +1,7 @@
 import { api } from './api';
 
 export async function listarLivros() {
-  const { data } = await api.get('/livros');
+  const { data } = await api.get('/livros/disponiveis');
   return data;
 }
 

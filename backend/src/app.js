@@ -1,7 +1,10 @@
 const express = require('express');
+const cors = require('cors');
+
 const app = express();
 const apiRoutes = require('./routes/Routes');
 
+app.use(cors()); // 🔥 libera todas as origens
 app.use(express.json());
 app.use(apiRoutes);
 
