@@ -26,16 +26,26 @@ test.describe('Gerenciamento de Livros (E2E)', () => {
     const tituloAleatorio = `Livro E2E ${Math.floor(Math.random() * 1000)}`;
 
     await page.goto('/livros');
-
-    // 1. Clicar no FAB (+) para abrir o modal
     await page.locator('.fab').click();
-
-    // 2. Preencher o formulário no modal
     await page.fill('input[name="titulo"]', tituloAleatorio);
     await page.fill('input[name="autor"]', 'Automação Playwright');
 
-    // 3. Salvar
-    await page.click('button[type="submit"]');
+    const responsePromise = page.waitForResponse(resp=>
+      resp.url().includes('/livros') &&
+      resp.request().method() === 'POST' &&
+      resp.status() >= 200 && resp.status() <300
+    );
+    
+    await page.getByRole('button',{name: 'Confirmar'}).click();
+    
+    const response = await responsePromise;
+    const data = await response.json();
+    const idCriado = data.id;
+
+    await expect(page.locator('.modal')).not.toBeVisible();
+    await page.fill('input[placeholder="Buscar por ID..."]', String(idCriado));
+    await page.locator('button.btn--primary').filter({has: page.locator('svg.lucide-search')}).click();
+    await expect (page.locator('.list-card__title')).toContainText(tituloAleatorio);
 
     // 4. Verificar se o novo livro aparece na lista
     await expect(page.getByText(tituloAleatorio)).toBeVisible();
