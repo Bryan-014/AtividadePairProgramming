@@ -262,6 +262,7 @@ export function LivrosPage() {
                     onChange={e => setForm({ ...form, titulo: e.target.value })}
                     required
                     autoFocus
+                    name="titulo"
                   />
                 </div>
                 <div className="form-field">
@@ -271,6 +272,7 @@ export function LivrosPage() {
                     value={form.autor}
                     onChange={e => setForm({ ...form, autor: e.target.value })}
                     required
+                    name="autor"
                   />
                 </div>
               </div>
